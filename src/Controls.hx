@@ -1,5 +1,6 @@
 #if keep @:keep #end
 class Controls {
+	// Gamepad shortcuts
 	public static var A = 88;
 	public static var B = 67;
 	public static var U = 38;
@@ -7,9 +8,15 @@ class Controls {
 	public static var L = 37;
 	public static var R = 39;
 	public static var MOUSE = -1;
+	// Mouse position
 	public static var M = {x:0,y:0}
+	
 	static var k:Map<Int,Bool> = [];
 	static var l:Map<Int,Bool> = [];
+	
+	/**
+	 *	Starts listeners for controls
+	**/
 	public static function init() {
 		document.addEventListener('keydown', (e) -> k.set(e.keyCode, true));
 		document.addEventListener('keyup', (e) -> k.set(e.keyCode, false));
@@ -20,7 +27,15 @@ class Controls {
 			y: (e.offsetY / Game.zy).floor()
 		}
 	}
+
+	/**
+	 *	Check the state of a button
+	**/
 	public static function p(n:Int):Bool return k.exists(n) && k[n];
+	
+	/**
+	 *	Check to see if a button was just pressed
+	**/
 	public static function jp(n:Int):Bool {
 		if (!k.exists(n)) return false;
 		if (!l.exists(n)) {
