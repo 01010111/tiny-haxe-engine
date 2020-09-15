@@ -20,6 +20,7 @@ class Game {
 	 *	Starts the engine. Pass parent element's id, and desired width and height
 	**/
 	static function init(p:String,_w:Int,_h:Int) {
+		document.addEventListener('contextmenu', e -> e.preventDefault());
 		// Create a canvas element and append it to the desired parent element
 		var c = document.createCanvasElement();
 		var el = document.getElementById(p);
