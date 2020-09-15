@@ -85,9 +85,10 @@ To resize the screen, you can mess with the CSS in `.template/index.html`.
 
 ## Roadmap
 
-- [ ] Saving/loading
 - [ ] Vibration
 - [ ] Sprite features
   - [ ] FlipX/Y
   - [ ] Rotation?
 - [ ] Audio
+- [x] Saving/loading
+- [x] Use `requestAnimationFrame()`
