@@ -19,7 +19,7 @@ class DrawTools {
 	public static function fc(ctx:CanvasRenderingContext2D, col:String, x:Float, y:Float, r:Float) {
 		ctx.fillStyle = col;
 		ctx.beginPath();
-		ctx.arc(x,y,r,0,2*Math.PI);
+		ctx.arc(x,y,r,0,2*PI);
 		ctx.fill();
 		return ctx;
 	}
@@ -29,7 +29,7 @@ class DrawTools {
 	**/
 	public static function c(ctx:CanvasRenderingContext2D, col:String, x:Float, y:Float, r:Float, ?lw:Float) {
 		ctx.ls(col, lw);
-		ctx.arc(x,y,r,0,2*Math.PI);
+		ctx.arc(x,y,r,0,2*PI);
 		ctx.stroke();
 		return ctx;
 	}

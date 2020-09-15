@@ -4,12 +4,24 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="app.min.js"></script>
 	<style>
-		* {padding:0;margin:0;}
-		body{display:flex;align-items:center;justify-content:center;background-color:#222;}
-		canvas, .container {width: min(100vh,100vw);height: min(100vh,100vw);image-rendering: pixelated;}
+		* {
+			padding: 0;
+			margin: 0;
+		}
+		body {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: #222;
+		}
+		canvas, .c {
+			width: min(100vh,100vw);
+			height: min(100vh,100vw);
+			image-rendering: pixelated;
+		}
 	</style>
 </head>
-<body onload="Game.init('game-container',128,128)">
-	<div id="game-container" class="container"></div>
+<body onload="Game.init('gc',128,128)">
+	<div id="gc" class="c"></div>
 </body>
 </html>
