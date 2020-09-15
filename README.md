@@ -49,23 +49,19 @@ CTX.spr(3, 24, 72, 2, 3);
 You can use keyboard and mouse (or tap) to control your game!
 
 ```haxe
-// Reference `C` for Controls, `C.p()` to see if a button is pressed, `C.jp()` to see if a button was just pressed.
+// Reference `C` for Controls, `C.p()` to see if a button is pressed, `C.jp()` to see if a button was just pressed. Just pass through the keycode of the key you want to check!
 console.log(C.p(32)); // will log whether the spacebar was pressed
 
-// There are several shortcuts, `C.MOUSE` references the left mouse button
-console.log(C.jp(C.MOUSE)); // will log if the left mouse button was just pressed
-
-// There are more shortcuts to simulate a simple gamepad:
-C.A; // X key
-C.B; // C key
-C.U; // Up key
-C.D; // Down key
-C.L; // Left key
-C.R; // Right key
+// It also tracks mouse clicks. You can refernce them like this:
+C.p(-1); // Left mouse button
+C.p(-2); // Middle mouse button
+C.p(-3); // Right mouse button
 
 // If you need the mouse position reference `C.M`
 console.log(C.M.x, C.M.y); // logs mouse x and y position
 ```
+
+[keycode.info](https://keycode.info/) is my favorite place to quickly determine the keycode of a specific key!
 
 ### Building
 
@@ -86,3 +82,12 @@ Then you need to spin up a server and open `index.html` in your browser!
 To resize your game, change the `Game.init()` call in `.template/index.html` - by default it sets the game to 128x128px.
 
 To resize the screen, you can mess with the CSS in `.template/index.html`.
+
+## Roadmap
+
+- [ ] Saving/loading
+- [ ] Vibration
+- [ ] Sprite features
+  - [ ] FlipX/Y
+  - [ ] Rotation?
+- [ ] Audio
