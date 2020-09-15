@@ -80,3 +80,9 @@ Run `haxe build.hxml` from the the project's root folder to generate several fil
 You you use a sprite sheet, you should throw that in the `bin` folder as well!
 
 Then you need to spin up a server and open `index.html` in your browser!
+
+### Misc
+
+To resize your game, change the `Game.init()` call in `.template/index.html` - by default it sets the game to 128x128px.
+
+To resize the screen, you can mess with the CSS in `.template/index.html`.
