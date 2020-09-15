@@ -1,3 +1,4 @@
+import js.html.DivElement;
 import js.html.CanvasRenderingContext2D;
 #if keep @:keep #end
 @:expose('Game')
@@ -13,8 +14,12 @@ class Game {
 	public static var zy:Float;
 	// current scene
 	public static var s:Scene;
+	#if fr
 	// for calculating framerate:
-	#if fr static var last_time:Float; #end
+	static var last_time:Float = 0;
+	// container for showing framerate
+	static var fr_el:DivElement;
+	#end
 
 	/**
 	 *	Starts the engine. Pass parent element's id, and desired width and height
@@ -39,17 +44,24 @@ class Game {
 		}
 		window.onresize();
 		// Game loop:
-		window.setInterval(() -> {
-			s.update();
-			s.draw();
-			#if fr
-			var fr = 1000/(Date.now().getTime() - last_time);
-			if (last_time != null) if (fr <= 55) console.log(fr);
-			last_time = Date.now().getTime();
-			#end
-		}, 16.667);
+		window.requestAnimationFrame(loop);
 		// Start game
 		Main.main();
+		#if fr
+		document.body.appendChild(fr_el = document.createDivElement());
+		#end
+	}
+	
+	static function loop(e:Float) {
+		s.update();
+		s.draw();
+		#if fr
+		var fr = '${(10000/(e - last_time)).round()/10}';
+		if (fr.length < 4) fr += '.0';
+		fr_el.innerText = '$fr fps';
+		last_time = e;
+		#end
+		window.requestAnimationFrame(loop);
 	}
 	
 }
