@@ -1,0 +1,11 @@
+-lib uglifyjs
+-cp src
+-D analyzer-optimize
+# use this to check framework filesize
+# -D fw
+# use this to check framerate
+# -D fr
+-dce full
+Game
+--js bin/app.js
+--cmd cp ./.template/index.html bin/
