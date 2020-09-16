@@ -60,6 +60,18 @@ DrawTools.clr = function(col) {
 		Game.ctx.clearRect(0,0,Game.w,Game.h);
 	}
 };
+DrawTools.line = function(col,x1,y1,x2,y2,lw) {
+	DrawTools.ls(col,lw);
+	Game.ctx.moveTo(x1,y1);
+	Game.ctx.lineTo(x2,y2);
+	Game.ctx.stroke();
+};
+DrawTools.fcirc = function(col,x,y,r) {
+	Game.ctx.fillStyle = col;
+	Game.ctx.beginPath();
+	Game.ctx.arc(x,y,r,0,2 * Math.PI);
+	Game.ctx.fill();
+};
 DrawTools.circ = function(col,x,y,r,lw) {
 	DrawTools.ls(col,lw);
 	Game.ctx.arc(x,y,r,0,2 * Math.PI);
@@ -68,6 +80,10 @@ DrawTools.circ = function(col,x,y,r,lw) {
 DrawTools.frect = function(col,x,y,w,h) {
 	Game.ctx.fillStyle = col;
 	Game.ctx.fillRect(x,y,w,h);
+};
+DrawTools.rect = function(col,x,y,w,h,lw) {
+	DrawTools.ls(col,lw);
+	Game.ctx.strokeRect(x,y,w,h);
 };
 DrawTools.ls = function(col,lw) {
 	Game.ctx.lineWidth = lw != null ? lw : 1;
@@ -123,104 +139,11 @@ Game.loop = function(e) {
 };
 var Main = function() { };
 Main.main = function() {
-	Game.s = new MyScene();
-};
-var MyScene = function() {
-	this.p = [];
-	Spr.l("s.png",0);
-	Spr.a(0,0,0,0,8,8);
-	Spr.a(1,0,8,0,8,8);
-	Spr.a(2,0,16,0,8,8);
-	Spr.a(3,0,24,0,8,8);
-};
-MyScene.prototype = {
-	update: function() {
-		var _g = 0;
-		var _g1 = this.p;
-		while(_g < _g1.length) {
-			var o = _g1[_g];
-			++_g;
-			o.x += o.dx;
-			o.y += o.dy;
-			if(o.x + 10 > Game.w && o.dx > 0 || o.x < 0 && o.dx < 0) {
-				o.dx *= -1;
-			}
-			if(o.y + 10 > Game.h && o.dy > 0 || o.y < 0 && o.dy < 0) {
-				o.dy *= -1;
-			}
-		}
-		if(Controls.jp(-1)) {
-			this.p.push({ id : this.p.length % 4, x : Controls.M.x, y : Controls.M.y, dx : Math.random() - 0.5, dy : Math.random() - 0.5, s : 1, r : 0, a : Math.random()});
-		}
-		if(Controls.p(-3)) {
-			var _g2 = 0;
-			var _g3 = this.p;
-			while(_g2 < _g3.length) {
-				var o1 = _g3[_g2];
-				++_g2;
-				if(Math.abs(o1.x - Controls.M.x) < 8 && Math.abs(o1.y - Controls.M.y) < 8) {
-					this.p.splice(this.p.indexOf(o1),1);
-				}
-			}
-		}
-		if(Controls.p(88)) {
-			var _g21 = 0;
-			var _g31 = this.p;
-			while(_g21 < _g31.length) {
-				var o2 = _g31[_g21];
-				++_g21;
-				o2.dx *= 0.9;
-				o2.dy *= 0.9;
-			}
-		}
-		if(Controls.jp(67)) {
-			var _g22 = 0;
-			var _g32 = this.p;
-			while(_g22 < _g32.length) {
-				var o3 = _g32[_g22];
-				++_g22;
-				o3.dx = Math.random() - 0.5;
-				o3.dy = Math.random() - 0.5;
-			}
-		}
-		if(Controls.jp(83)) {
-			Save.s("test",{ p : this.p});
-		}
-		if(Controls.jp(76)) {
-			var l = Save.l("test");
-			this.p = l == null ? [] : l.p;
-		}
-	}
-	,draw: function() {
-		DrawTools.clr("black");
-		if(Controls.p(-3)) {
-			DrawTools.circ("red",Controls.M.x,Controls.M.y,8,4);
-		}
-		Math.sin(Game.t / 1000);
-		var _g = 0;
-		var _g1 = this.p;
-		while(_g < _g1.length) {
-			var o = _g1[_g];
-			++_g;
-			o.s += Math.sin(Game.t / 1000) / 10;
-			o.r += 0.1;
-			DrawTools.atl(o.id,Math.round(o.x),Math.round(o.y),{ a : o.a, sx : o.s, sy : o.s, r : o.r});
-		}
-	}
-};
-var Save = function() { };
-Save.s = function(s,d) {
-	if(js_Browser.getLocalStorage() == null) {
-		return false;
-	}
-	js_Browser.getLocalStorage().setItem(s,JSON.stringify(d));
-	return true;
-};
-Save.l = function(s) {
-	if(js_Browser.getLocalStorage() == null) {
-		return null;
-	}
-	return JSON.parse(js_Browser.getLocalStorage().getItem(s));
+	Game.s = { update : function() {
+		return;
+	}, draw : function() {
+		return;
+	}};
 };
 var Spr = function() { };
 Spr.l = function(src,id) {
@@ -247,6 +170,11 @@ Vec.prototype = {
 	get_l: function() {
 		return Math.sqrt(this.x * this.x + this.y * this.y);
 	}
+	,set_l: function(n) {
+		this.normalize();
+		this.set(this.x * n,this.y * n);
+		return n;
+	}
 	,get_a: function() {
 		return Math.atan2(this.y,this.x);
 	}
@@ -262,24 +190,12 @@ Vec.prototype = {
 	,put: function() {
 		Vec.p.push(this);
 	}
+	,normalize: function() {
+		this.set(this.x / this.get_l(),this.y / this.get_l());
+	}
 };
 var haxe_ds_IntMap = function() {
 	this.h = { };
-};
-var js_Browser = function() { };
-js_Browser.getLocalStorage = function() {
-	try {
-		var s = window.localStorage;
-		s.getItem("");
-		if(s.length == 0) {
-			var key = "_hx_" + Math.random();
-			s.setItem(key,key);
-			s.removeItem(key);
-		}
-		return s;
-	} catch( e ) {
-		return null;
-	}
 };
 Controls.M = { x : 0, y : 0};
 Controls.k = new haxe_ds_IntMap();

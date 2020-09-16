@@ -94,10 +94,10 @@ Use these substitutes to save some space!
 
 ## Roadmap
 
-- [ ] Sprite features
-  - [ ] FlipX/Y
-  - [ ] Rotation?
 - [ ] Audio
+- [x] Sprite features
+  - [x] FlipX/Y
+  - [x] Rotation?
 - [x] Vibration
 - [x] Saving/loading
 - [x] Use `requestAnimationFrame()`
