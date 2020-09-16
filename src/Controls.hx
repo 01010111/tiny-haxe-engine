@@ -20,7 +20,7 @@ class Controls {
 		CTX.canvas.onpointermove = (e) -> M = {x: (e.offsetX / Game.zx).floor(),y: (e.offsetY / Game.zy).floor()}
 		CTX.canvas.ontouchmove = (e) -> {
 			console.log(e);
-			var t = e.touches.pop();
+			var t = e.touches.item(0);
 			M = {x: (t.clientX / Game.zx).floor(),y: (t.clientY / Game.zy).floor()}
 		}
 	}
