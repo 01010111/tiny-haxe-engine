@@ -72,6 +72,43 @@ class DrawTools {
 
 	#if use_sprites
 
+	#if scale_and_rotate_sprites
+	/**
+	 *	Draw a sprite at coordinates x,y and a given id, offset, size, and options
+	 *	`ATTENTION`: make sure to use `Spr.l()` to load an image first!
+	**/
+	public static function spr(x:Float, y:Float, sprite:{id:Int, ox:Float, oy:Float, w:Float, h:Float}, ?options:{?a:Float,?sx:Float,?sy:Float,?r:Float}) {
+		options = {
+			a: options != null && options.a != null ? options.a : 1,
+			sx: options != null && options.sx != null ? options.sx : 1,
+			sy: options != null && options.sy != null ? options.sy : 1,
+			r: options != null && options.r != null ? options.r : 1
+		}
+		var i_hat = Vec.get(options.sx, 0);
+		var j_hat = Vec.get(0, options.sy);
+		var offset = Vec.get(sprite.w / 2, sprite.h / 2);
+		i_hat.a += options.r;
+		j_hat.a += options.r;
+		CTX.save();
+		CTX.transform(i_hat.x, j_hat.x, i_hat.y, j_hat.y, x, y);
+		CTX.transform(1,0,0,1,-offset.x,-offset.y);
+		CTX.globalAlpha = options.a;
+		CTX.drawImage(Spr.m[sprite.id], sprite.ox, sprite.oy, sprite.w, sprite.h, 0, 0, sprite.w, sprite.h);
+		CTX.restore();
+		i_hat.put();
+		j_hat.put();
+		offset.put();
+	}
+	
+	/**
+	*	Draw an atlas frame with a given ID at coordinates x,y with options
+	**/
+	public static function atl(id:Int, x:Float, y:Float, ?options:{?a:Float,?sx:Float,?sy:Float,?r:Float}) {
+		spr(x,y,Spr.atl[id],options);
+	}
+
+	#else
+
 	/**
 	 *	Draw a sprite with a given ID, at coordinates x,y and a given offset and size
 	 *	`ATTENTION`: make sure to use `Spr.l()` to load an image first!
@@ -87,6 +124,8 @@ class DrawTools {
 		var a = Spr.atl[id];
 		CTX.drawImage(Spr.m[a.id], a.ox, a.oy, a.w, a.h, x, y, a.w, a.h);
 	}
+
+	#end
 
 	#end
 
