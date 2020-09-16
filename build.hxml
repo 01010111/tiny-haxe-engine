@@ -1,17 +1,22 @@
+# --- Features - Comment out to disable a feature ---
+
+-D use_mouse
+-D use_keyboard
+-D use_touch
+-D use_primatives
+-D use_sprites
+
+# --- Options ---
+# -D show_framerate
+# -D framework_only
+-dce full
+
+# --- Build ---
+
+Game
 -lib uglifyjs
 -cp src
 -D analyzer-optimize
-
-# use this to check framerate
-# -D fr
-
-# use this to check framework filesize
-# -D fw
-
-# comment this when checking framework filesize
--dce full
-
-Game
 --js bin/app.js
 --cmd cp .template/index.html bin/
 --cmd cp bin/* docs/ 

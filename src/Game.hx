@@ -1,6 +1,6 @@
 import js.html.DivElement;
 import js.html.CanvasRenderingContext2D;
-#if keep @:keep #end
+
 @:expose('Game')
 class Game {
 	
@@ -18,8 +18,11 @@ class Game {
 	// current scene
 	public static var s:Scene;
 
+	// elapsed time
+	public static var t:Float;
+
 	// Framerate vars
-	#if fr
+	#if show_framerate
 	static var last_time:Float = 0;
 	static var fr_el:DivElement;
 	#end
@@ -29,7 +32,7 @@ class Game {
 	**/
 	static function init(p:String,_w:Int,_h:Int) {
 		// Create container for framerate
-		#if fr document.body.appendChild(fr_el = document.createDivElement()); #end
+		#if show_framerate document.body.appendChild(fr_el = document.createDivElement()); #end
 
 		// Prevent right clicks so we can use them in a game
 		document.oncontextmenu = (e) -> e.preventDefault();
@@ -47,7 +50,7 @@ class Game {
 		ctx = c.getContext2d();
 		
 		// Initialize controls
-		C.init();
+		Controls.init();
 		
 		// Reset zoom variables on resize
 		window.onresize = (e) -> {
@@ -65,9 +68,10 @@ class Game {
 	
 	// Our game loop
 	static function loop(e:Float) {
+		t = e;
 		s.update();
 		s.draw();
-		#if fr
+		#if show_framerate
 		var fr = '${(10000/(e - last_time)).round()/10}';
 		if (fr.length < 4) fr += '.0';
 		fr_el.innerText = '$fr fps';

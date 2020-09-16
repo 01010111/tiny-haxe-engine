@@ -18,16 +18,16 @@ Controls.init = function() {
 		Controls.k.h[-1 - e3.button] = false;
 		return;
 	};
-	Game.ctx.canvas.ontouchstart = function(e4) {
+	Game.ctx.canvas.onpointermove = function(e4) {
+		return Controls.M = { x : Math.floor(e4.offsetX / Game.zx), y : Math.floor(e4.offsetY / Game.zy)};
+	};
+	Game.ctx.canvas.ontouchstart = function(e5) {
 		Controls.k.h[-1] = true;
 		return;
 	};
-	Game.ctx.canvas.ontouchend = function(e5) {
+	Game.ctx.canvas.ontouchend = function(e6) {
 		Controls.k.h[-1] = false;
 		return;
-	};
-	Game.ctx.canvas.onpointermove = function(e6) {
-		return Controls.M = { x : Math.floor(e6.offsetX / Game.zx), y : Math.floor(e6.offsetY / Game.zy)};
 	};
 	Game.ctx.canvas.ontouchmove = function(e7) {
 		return Controls.M = { x : Math.floor(e7.touches.item(0).clientX / Game.zx), y : Math.floor(e7.touches.item(0).clientY / Game.zy)};
@@ -53,27 +53,31 @@ Controls.jp = function(n) {
 	return o;
 };
 var DrawTools = function() { };
-DrawTools.c = function(ctx,col,x,y,r,lw) {
-	DrawTools.ls(ctx,col,lw);
-	ctx.arc(x,y,r,0,2 * Math.PI);
-	ctx.stroke();
-	return ctx;
+DrawTools.clr = function(col) {
+	if(col != null) {
+		DrawTools.frect(col,0,0,Game.w,Game.h);
+	} else {
+		Game.ctx.clearRect(0,0,Game.w,Game.h);
+	}
 };
-DrawTools.fr = function(ctx,col,x,y,w,h) {
-	ctx.fillStyle = col;
-	ctx.fillRect(x,y,w,h);
-	return ctx;
+DrawTools.circ = function(col,x,y,r,lw) {
+	DrawTools.ls(col,lw);
+	Game.ctx.arc(x,y,r,0,2 * Math.PI);
+	Game.ctx.stroke();
 };
-DrawTools.spr = function(ctx,n,x,y,w,h) {
-	w = (w != null ? w : 1) * Sprite.fw;
-	h = (h != null ? h : 1) * Sprite.fh;
-	ctx.drawImage(Sprite.s,n % Sprite.col * Sprite.fw,Math.floor(n / Sprite.col) * Sprite.fh,w,h,Math.round(x),Math.round(y),w,h);
+DrawTools.frect = function(col,x,y,w,h) {
+	Game.ctx.fillStyle = col;
+	Game.ctx.fillRect(x,y,w,h);
 };
-DrawTools.ls = function(ctx,col,lw) {
-	ctx.lineWidth = lw != null ? lw : 1;
-	ctx.strokeStyle = col;
-	ctx.beginPath();
-	return ctx;
+DrawTools.ls = function(col,lw) {
+	Game.ctx.lineWidth = lw != null ? lw : 1;
+	Game.ctx.strokeStyle = col;
+	Game.ctx.beginPath();
+	return Game.ctx;
+};
+DrawTools.atl = function(id,x,y) {
+	var a = Spr.atl.h[id];
+	Game.ctx.drawImage(Spr.m.h[a.id],a.ox,a.oy,a.w,a.h,x,y,a.w,a.h);
 };
 var Game = $hx_exports["Game"] = function() { };
 Game.init = function(p,_w,_h) {
@@ -96,6 +100,7 @@ Game.init = function(p,_w,_h) {
 	Main.main();
 };
 Game.loop = function(e) {
+	Game.t = e;
 	Game.s.update();
 	Game.s.draw();
 	window.requestAnimationFrame(Game.loop);
@@ -115,7 +120,11 @@ Main.main = function() {
 };
 var MyScene = function() {
 	this.p = [];
-	Sprite.load("s.png",8,8,4);
+	Spr.l("s.png",0);
+	Spr.a(0,0,0,0,8,8);
+	Spr.a(1,0,8,0,8,8);
+	Spr.a(2,0,16,0,8,8);
+	Spr.a(3,0,24,0,8,8);
 };
 MyScene.prototype = {
 	update: function() {
@@ -124,6 +133,8 @@ MyScene.prototype = {
 		while(_g < _g1.length) {
 			var o = _g1[_g];
 			++_g;
+			o.x += o.dx;
+			o.y += o.dy;
 			if(o.x + 10 > Game.w && o.dx > 0 || o.x < 0 && o.dx < 0) {
 				o.dx *= -1;
 			}
@@ -133,7 +144,6 @@ MyScene.prototype = {
 		}
 		if(Controls.p(-1)) {
 			this.p.push({ id : this.p.length % 4, x : Controls.M.x - 4, y : Controls.M.y - 4, dx : Math.random() - 0.5, dy : Math.random() - 0.5});
-			Util.bz(10);
 		}
 		if(Controls.p(-3)) {
 			var _g2 = 0;
@@ -175,16 +185,16 @@ MyScene.prototype = {
 		}
 	}
 	,draw: function() {
-		DrawTools.fr(Game.ctx,"black",0,0,Game.w,Game.h);
+		DrawTools.clr("black");
 		if(Controls.p(-3)) {
-			DrawTools.c(Game.ctx,"red",Controls.M.x,Controls.M.y,8,4);
+			DrawTools.circ("red",Controls.M.x,Controls.M.y,8,4);
 		}
 		var _g = 0;
 		var _g1 = this.p;
 		while(_g < _g1.length) {
 			var o = _g1[_g];
 			++_g;
-			DrawTools.spr(Game.ctx,o.id,o.x += o.dx,o.y += o.dy,1,1);
+			DrawTools.atl(o.id,Math.round(o.x),Math.round(o.y));
 		}
 	}
 };
@@ -202,21 +212,18 @@ Save.l = function(s) {
 	}
 	return JSON.parse(js_Browser.getLocalStorage().getItem(s));
 };
-var Sprite = function() { };
-Sprite.load = function(src,fw,fh,col) {
+var Spr = function() { };
+Spr.l = function(src,id) {
 	var d = window.document.createElement("div");
 	d.style.display = "none";
 	window.document.body.appendChild(d);
-	Sprite.s = window.document.createElement("img");
-	Sprite.s.src = src;
-	d.appendChild(Sprite.s);
-	Sprite.fw = fw;
-	Sprite.fh = fh;
-	Sprite.col = col;
+	var s = window.document.createElement("img");
+	s.src = src;
+	d.appendChild(s);
+	Spr.m.h[id] = s;
 };
-var Util = function() { };
-Util.bz = function(n) {
-	window.navigator.vibrate(n);
+Spr.a = function(id,sid,ox,oy,w,h) {
+	Spr.atl.h[id] = { id : sid, ox : ox, oy : oy, w : w, h : h};
 };
 var haxe_ds_IntMap = function() {
 	this.h = { };
@@ -239,4 +246,6 @@ js_Browser.getLocalStorage = function() {
 Controls.M = { x : 0, y : 0};
 Controls.k = new haxe_ds_IntMap();
 Controls.l = new haxe_ds_IntMap();
+Spr.m = new haxe_ds_IntMap();
+Spr.atl = new haxe_ds_IntMap();
 })(typeof exports != "undefined" ? exports : typeof window != "undefined" ? window : typeof self != "undefined" ? self : this, {});

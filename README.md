@@ -14,20 +14,20 @@ There are several built in functions for drawing:
 
 ```haxe
 // Clear the canvas
-CTX.clr();
+clr();
 
 // Draw a black stroked circle at x:32, y:64, with a radius of 8 pixels, and a line width of 4
-CTX.c('black', 32, 64, 8, 4);
+circ('black', 32, 64, 8, 4);
 // Draw a red filled circle at x:12, y:56, with a radius of 12 pixels
-CTX.fc('#FF004D', 12, 56, 12);
+fcirc('#FF004D', 12, 56, 12);
 
 // Draw a green stroked rectangle at x:8, y:16, with a width of 32, a height of 12, and a line width of 2 pixels
-CTX.r('green', 8, 16, 32, 12, 2);
+rect('green', 8, 16, 32, 12, 2);
 // Draw a yellow filled rectangle at the same position of the same size
-CTX.r('#FF0', 8, 16, 32, 12);
+frect('#FF0', 8, 16, 32, 12);
 
 // Draw a purple line from x:0, y:0 to x:100, y:100 with a default line width of 1 pixel
-CTX.l('purple', 0, 0, 100, 100);
+line('purple', 0, 0, 100, 100);
 ```
 
 ### Sprites
@@ -35,13 +35,15 @@ CTX.l('purple', 0, 0, 100, 100);
 To use sprites, prepare a spritesheet with the graphics to use in your game. It should be a grid of frames. Before using it, you must load it.
 
 ```haxe
-// Load your graphics, in this case a png containing 4 columns of 8x12px sprites, best to be done in your Scene's constructor
-Sprite.load('my-sprites.png', 8, 12, 4);
+// Load an image to be used in game with an integer ID
+Spr.l('my-sprites.png', 0);
 
-// Draw a sprite to screen, use frame index 3, and draw it at x:24, y:72
-CTX.spr(3, 24, 72);
-// Use the next two arguments to draw a sprite that spans 2 frames horizontally, and 3 vertically
-CTX.spr(3, 24, 72, 2, 3);
+// Draw a portion of the sprite (with an ID of 0) to screen at x:8, y:12, the portion is found at x:16, y:32 on the sprite and has a width of 24 and a height of 64
+spr(0, 8, 12, 16, 32, 24, 64);
+
+// Instead of referencing all those numbers you can store an atlas frame with a given ID (in this case we'll use 9), and the same arguments for offset and size
+Spr.a(9, 0, 16, 32, 24, 64);
+atl(9, 8, 12);
 ```
 
 ### Controls
@@ -49,16 +51,16 @@ CTX.spr(3, 24, 72, 2, 3);
 You can use keyboard and mouse (or tap) to control your game!
 
 ```haxe
-// Reference `C` for Controls, `C.p()` to see if a button is pressed, `C.jp()` to see if a button was just pressed. Just pass through the keycode of the key you want to check!
-console.log(C.p(32)); // will log whether the spacebar was pressed
+// `Controls.p()` to see if a button is pressed, `Controls.jp()` to see if a button was just pressed. Just pass through the keycode of the key you want to check!
+console.log(Controls.p(32)); // will log whether the spacebar was pressed
 
 // It also tracks mouse clicks. You can refernce them like this:
-C.p(-1); // Left mouse button
-C.p(-2); // Middle mouse button
-C.p(-3); // Right mouse button
+Controls.p(-1); // Left mouse button
+Controls.p(-2); // Middle mouse button
+Controls.p(-3); // Right mouse button
 
-// If you need the mouse position reference `C.M`
-console.log(C.M.x, C.M.y); // logs mouse x and y position
+// If you need the mouse position reference `Controls.M`
+console.log(Controls.M.x, Controls.M.y); // logs mouse x and y position
 ```
 
 [keycode.info](https://keycode.info/) is my favorite place to quickly determine the keycode of a specific key!
@@ -73,7 +75,7 @@ Run `haxe build.hxml` from the the project's root folder to generate several fil
 - `bin/app.min.js` - the minified tiny version of your game
 - `bin/index.html` copied from `.template/index.html` (if you want to edit it, edit the one in the `.template` folder!)
 
-You you use a sprite sheet, you should throw that in the `bin` folder as well!
+Make sure to add your assets to the `bin` folder as well!
 
 Then you need to spin up a server and open `index.html` in your browser!
 
@@ -85,10 +87,10 @@ To resize the screen, you can mess with the CSS in `.template/index.html`.
 
 ## Roadmap
 
-- [ ] Vibration
 - [ ] Sprite features
   - [ ] FlipX/Y
   - [ ] Rotation?
 - [ ] Audio
+- [x] Vibration
 - [x] Saving/loading
 - [x] Use `requestAnimationFrame()`

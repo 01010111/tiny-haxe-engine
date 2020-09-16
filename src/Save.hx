@@ -1,6 +1,5 @@
 import js.Browser;
 
-@:keep
 class Save {
 	
 	/**
