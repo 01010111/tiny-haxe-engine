@@ -11,14 +11,14 @@ class Controls {
 	 *	Starts listeners for controls
 	**/
 	public static function init() {
-		document.addEventListener('keydown', (e) -> k.set(e.keyCode, true));
-		document.addEventListener('keyup', (e) -> k.set(e.keyCode, false));
+		document.onkeydown = (e) -> k.set(e.keyCode, true);
+		document.onkeyup = (e) -> k.set(e.keyCode, false);
 		CTX.canvas.onpointerdown = (e) -> k.set(-1 - e.button, true);
 		CTX.canvas.onpointerup = (e) -> k.set(-1 - e.button, false);
-		CTX.canvas.onpointermove = (e) -> M = {
-			x: (e.offsetX / Game.zx).floor(),
-			y: (e.offsetY / Game.zy).floor()
-		}
+		CTX.canvas.ontouchstart = (e) -> k.set(-1, true);
+		CTX.canvas.ontouchend = (e) -> k.set(-1, false);
+		CTX.canvas.onpointermove = (e) -> M = {x: (e.offsetX / Game.zx).floor(),y: (e.offsetY / Game.zy).floor()}
+		CTX.canvas.ontouchmove = (e) -> M = {x: (e.touches[0].clientX / Game.zx).floor(),y: (e.touches[0].clientY / Game.zy).floor()}
 	}
 
 	/**
