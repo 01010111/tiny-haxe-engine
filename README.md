@@ -85,6 +85,13 @@ To resize your game, change the `Game.init()` call in `.template/index.html` - b
 
 To resize the screen, you can mess with the CSS in `.template/index.html`.
 
+## Notes
+
+Use these substitutes to save some space!
+
+- `Array.remove` - use `Array.splice` instead
+- `Map<String,Dynamic>` - use an Int Map instead: `Map<Int,Dynamic>`
+
 ## Roadmap
 
 - [ ] Sprite features

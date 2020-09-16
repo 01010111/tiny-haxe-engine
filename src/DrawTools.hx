@@ -4,7 +4,15 @@ class DrawTools {
 	 *	Clear the canvas
 	**/
 	public static function clr(?col:String) {
+		#if use_primatives
 		col != null ? frect(col, 0, 0, Game.w, Game.h) : CTX.clearRect(0, 0, Game.w, Game.h);
+		#else
+		if (col == null) CTX.clearRect(0, 0, Game.w, Game.h);
+		else {
+			CTX.fillStyle = col;
+			CTX.fillRect(0, 0, Game.w, Game.h);
+		}
+		#end
 	}
 
 	#if use_primatives
