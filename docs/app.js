@@ -30,9 +30,7 @@ Controls.init = function() {
 		return Controls.M = { x : Math.floor(e6.offsetX / Game.zx), y : Math.floor(e6.offsetY / Game.zy)};
 	};
 	Game.ctx.canvas.ontouchmove = function(e7) {
-		window.console.log(e7);
-		var t = e7.touches.item(0);
-		return Controls.M = { x : Math.floor(t.clientX / Game.zx), y : Math.floor(t.clientY / Game.zy)};
+		return Controls.M = { x : Math.floor(e7.touches.item(0).clientX / Game.zx), y : Math.floor(e7.touches.item(0).clientY / Game.zy)};
 	};
 };
 Controls.p = function(n) {
