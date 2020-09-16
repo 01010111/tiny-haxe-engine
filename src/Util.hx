@@ -1,5 +1,7 @@
 class Util {
 	
-	public static function bz(n:Int) window.navigator.vibrate(n);
+	public static function bz(n:Int) try{
+		window.navigator.vibrate(n);
+	}catch(e:Dynamic){};
 
 }
