@@ -53,20 +53,6 @@ Controls.jp = function(n) {
 	return o;
 };
 var DrawTools = function() { };
-DrawTools.l = function(ctx,col,x1,y1,x2,y2,lw) {
-	DrawTools.ls(ctx,col,lw);
-	ctx.moveTo(x1,y1);
-	ctx.lineTo(x2,y2);
-	ctx.stroke();
-	return ctx;
-};
-DrawTools.fc = function(ctx,col,x,y,r) {
-	ctx.fillStyle = col;
-	ctx.beginPath();
-	ctx.arc(x,y,r,0,2 * Math.PI);
-	ctx.fill();
-	return ctx;
-};
 DrawTools.c = function(ctx,col,x,y,r,lw) {
 	DrawTools.ls(ctx,col,lw);
 	ctx.arc(x,y,r,0,2 * Math.PI);
@@ -77,14 +63,6 @@ DrawTools.fr = function(ctx,col,x,y,w,h) {
 	ctx.fillStyle = col;
 	ctx.fillRect(x,y,w,h);
 	return ctx;
-};
-DrawTools.r = function(ctx,col,x,y,w,h,lw) {
-	DrawTools.ls(ctx,col,lw);
-	ctx.strokeRect(x,y,w,h);
-	return ctx;
-};
-DrawTools.clr = function(ctx) {
-	ctx.clearRect(0,0,Game.w,Game.h);
 };
 DrawTools.spr = function(ctx,n,x,y,w,h) {
 	w = (w != null ? w : 1) * Sprite.fw;
@@ -115,14 +93,114 @@ Game.init = function(p,_w,_h) {
 	};
 	window.onresize();
 	window.requestAnimationFrame(Game.loop);
+	Main.main();
 };
 Game.loop = function(e) {
 	Game.s.update();
 	Game.s.draw();
 	window.requestAnimationFrame(Game.loop);
 };
+var HxOverrides = function() { };
+HxOverrides.remove = function(a,obj) {
+	var i = a.indexOf(obj);
+	if(i == -1) {
+		return false;
+	}
+	a.splice(i,1);
+	return true;
+};
 var Main = function() { };
 Main.main = function() {
+	Game.s = new MyScene();
+};
+var MyScene = function() {
+	this.p = [];
+	Sprite.load("s.png",8,8,4);
+};
+MyScene.prototype = {
+	update: function() {
+		var _g = 0;
+		var _g1 = this.p;
+		while(_g < _g1.length) {
+			var o = _g1[_g];
+			++_g;
+			if(o.x + 10 > Game.w && o.dx > 0 || o.x < 0 && o.dx < 0) {
+				o.dx *= -1;
+			}
+			if(o.y + 10 > Game.h && o.dy > 0 || o.y < 0 && o.dy < 0) {
+				o.dy *= -1;
+			}
+		}
+		if(Controls.p(-1)) {
+			this.p.push({ id : this.p.length % 4, x : Controls.M.x - 4, y : Controls.M.y - 4, dx : Math.random() - 0.5, dy : Math.random() - 0.5});
+			Util.bz(10);
+		}
+		if(Controls.p(-3)) {
+			var _g2 = 0;
+			var _g3 = this.p;
+			while(_g2 < _g3.length) {
+				var o1 = _g3[_g2];
+				++_g2;
+				if(Math.abs(o1.x - Controls.M.x) < 8 && Math.abs(o1.y - Controls.M.y) < 8) {
+					HxOverrides.remove(this.p,o1);
+				}
+			}
+		}
+		if(Controls.p(88)) {
+			var _g21 = 0;
+			var _g31 = this.p;
+			while(_g21 < _g31.length) {
+				var o2 = _g31[_g21];
+				++_g21;
+				o2.dx *= 0.9;
+				o2.dy *= 0.9;
+			}
+		}
+		if(Controls.jp(67)) {
+			var _g22 = 0;
+			var _g32 = this.p;
+			while(_g22 < _g32.length) {
+				var o3 = _g32[_g22];
+				++_g22;
+				o3.dx = Math.random() - 0.5;
+				o3.dy = Math.random() - 0.5;
+			}
+		}
+		if(Controls.jp(83)) {
+			Save.s("test",{ p : this.p});
+		}
+		if(Controls.jp(76)) {
+			var l = Save.l("test");
+			this.p = l == null ? [] : l.p;
+		}
+	}
+	,draw: function() {
+		DrawTools.fr(Game.ctx,"black",0,0,Game.w,Game.h);
+		if(Controls.p(-3)) {
+			DrawTools.c(Game.ctx,"red",Controls.M.x,Controls.M.y,8,4);
+		}
+		var _g = 0;
+		var _g1 = this.p;
+		while(_g < _g1.length) {
+			var o = _g1[_g];
+			++_g;
+			DrawTools.spr(Game.ctx,o.id,o.x += o.dx,o.y += o.dy,1,1);
+		}
+	}
+};
+var Save = function() { };
+Save.s = function(s,d) {
+	if(js_Browser.getLocalStorage() == null) {
+		return false;
+	}
+	js_Browser.getLocalStorage().setItem(s,JSON.stringify(d));
+	return true;
+};
+Save.l = function(s) {
+	if(js_Browser.getLocalStorage() == null) {
+		return null;
+	}
+	return JSON.parse(js_Browser.getLocalStorage().getItem(s));
 };
 var Sprite = function() { };
 Sprite.load = function(src,fw,fh,col) {
@@ -136,8 +214,27 @@ Sprite.load = function(src,fw,fh,col) {
 	Sprite.fh = fh;
 	Sprite.col = col;
 };
+var Util = function() { };
+Util.bz = function(n) {
+	window.navigator.vibrate(n);
+};
 var haxe_ds_IntMap = function() {
 	this.h = { };
+};
+var js_Browser = function() { };
+js_Browser.getLocalStorage = function() {
+	try {
+		var s = window.localStorage;
+		s.getItem("");
+		if(s.length == 0) {
+			var key = "_hx_" + Math.random();
+			s.setItem(key,key);
+			s.removeItem(key);
+		}
+		return s;
+	} catch( e ) {
+		return null;
+	}
 };
 Controls.M = { x : 0, y : 0};
 Controls.k = new haxe_ds_IntMap();

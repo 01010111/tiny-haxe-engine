@@ -6,10 +6,10 @@
 # -D fr
 
 # use this to check framework filesize
--D fw
+# -D fw
 
 # comment this when checking framework filesize
-# -dce full
+-dce full
 
 Game
 --js bin/app.js
