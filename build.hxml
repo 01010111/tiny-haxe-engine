@@ -2,15 +2,16 @@
 -cp src
 -D analyzer-optimize
 
-# use this to check framework filesize
-# -D fw
-
 # use this to check framerate
 # -D fr
 
+# use this to check framework filesize
+-D fw
+
 # comment this when checking framework filesize
--dce full
+# -dce full
 
 Game
 --js bin/app.js
---cmd cp ./.template/index.html bin/
+--cmd cp .template/index.html bin/
+--cmd cp bin/* docs/ 

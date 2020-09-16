@@ -6,18 +6,21 @@ class Game {
 	
 	// context for drawing - reference `CTX` globally
 	public static var ctx:CanvasRenderingContext2D;
+
 	// width and height
 	public static var w:Int;
 	public static var h:Int;
+
 	// zoom scalars for calculating mouse position
 	public static var zx:Float;
 	public static var zy:Float;
+
 	// current scene
 	public static var s:Scene;
+
+	// Framerate vars
 	#if fr
-	// for calculating framerate:
 	static var last_time:Float = 0;
-	// container for showing framerate
 	static var fr_el:DivElement;
 	#end
 
@@ -25,33 +28,42 @@ class Game {
 	 *	Starts the engine. Pass parent element's id, and desired width and height
 	**/
 	static function init(p:String,_w:Int,_h:Int) {
-		document.addEventListener('contextmenu', e -> e.preventDefault());
+		// Create container for framerate
+		#if fr document.body.appendChild(fr_el = document.createDivElement()); #end
+
+		// Prevent right clicks so we can use them in a game
+		document.oncontextmenu = (e) -> e.preventDefault();
+
 		// Create a canvas element and append it to the desired parent element
 		var c = document.createCanvasElement();
 		var el = document.getElementById(p);
 		el.appendChild(c);
+		
 		// Set width and height
 		w = c.width = _w;
 		h = c.height = _h;
+		
 		// Set the main canvas context
 		ctx = c.getContext2d();
+		
 		// Initialize controls
 		C.init();
+		
 		// Reset zoom variables on resize
 		window.onresize = (e) -> {
 			zx = el.offsetWidth/_w;
 			zy = el.offsetHeight/_h;
 		}
 		window.onresize();
-		// Game loop:
+		
+		// Start game loop
 		window.requestAnimationFrame(loop);
+		
 		// Start game
 		Main.main();
-		#if fr
-		document.body.appendChild(fr_el = document.createDivElement());
-		#end
 	}
 	
+	// Our game loop
 	static function loop(e:Float) {
 		s.update();
 		s.draw();
