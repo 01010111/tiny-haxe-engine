@@ -5,6 +5,7 @@
 -D use_touch
 -D use_primatives
 -D use_sprites
+-D scale_and_rotate_sprites
 
 # --- Options ---
 # -D show_framerate
@@ -19,4 +20,4 @@ Game
 -D analyzer-optimize
 --js bin/app.js
 --cmd cp .template/index.html bin/
---cmd cp bin/* docs/ 
+--cmd cp bin/* docs/
