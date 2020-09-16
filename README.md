@@ -95,6 +95,7 @@ Use these substitutes to save some space!
 ## Roadmap
 
 - [ ] Audio
+- [ ] Responsiveness
 - [x] Sprite features
   - [x] FlipX/Y
   - [x] Rotation?
