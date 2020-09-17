@@ -32,7 +32,11 @@ class Game {
 	**/
 	static function init(p:String,_w:Int,_h:Int) {
 		// Create container for framerate
-		#if show_framerate document.body.appendChild(fr_el = document.createDivElement()); #end
+		#if show_framerate
+		fr_el = document.createDivElement();
+		fr_el.classList.add('fr');
+		document.body.appendChild(fr_el);
+		#end
 
 		// Prevent right clicks so we can use them in a game
 		document.oncontextmenu = (e) -> e.preventDefault();

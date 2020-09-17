@@ -5,7 +5,7 @@
 -D use_touch
 -D use_primatives
 -D use_sprites
--D scale_and_rotate_sprites
+-D use_transform
 
 # --- Options ---
 # -D show_framerate

@@ -72,7 +72,7 @@ class DrawTools {
 
 	#if use_sprites
 
-	#if scale_and_rotate_sprites
+	#if use_transform
 	/**
 	 *	Draw a sprite at coordinates x,y and a given id, offset, size, and options
 	 *	`ATTENTION`: make sure to use `Spr.l()` to load an image first!

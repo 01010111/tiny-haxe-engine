@@ -196,7 +196,6 @@ MyScene.prototype = {
 		if(Controls.p(-3)) {
 			DrawTools.circ("red",Controls.M.x,Controls.M.y,8,4);
 		}
-		Math.sin(Game.t / 1000);
 		var _g = 0;
 		var _g1 = this.p;
 		while(_g < _g1.length) {
